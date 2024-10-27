@@ -8,7 +8,7 @@
 EXEC=tp6
 
 #Liste des fichiers sources separes par des espaces
-SOURCES=main.cpp
+SOURCES=main_DSA.cpp
 
 #Liste des fichiers objets
 OBJETS=$(SOURCES:%.cpp=%.o)
@@ -36,7 +36,7 @@ depend:
 	rm dependances
 
 #DEPENDANCIES
-main.o: main.cpp 
+main_DSA.o: main_DSA.cpp 
 
 
 
