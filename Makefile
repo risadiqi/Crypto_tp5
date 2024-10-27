@@ -1,33 +1,37 @@
-#On purge la liste des suffixes utilis� pour les r�les implicites
+# On purge la liste des suffixes utilisés pour les règles implicites
 .SUFFIXES:
 
-#On ajoute simplements les extensions dont l'on a besoin
+# On ajoute simplement les extensions dont on a besoin
 .SUFFIXES:.cpp .o
 
-#Nom de l'executable
+# Nom de l'exécutable
 EXEC=tp6
 
-#Liste des fichiers sources separes par des espaces
+# Liste des fichiers sources séparés par des espaces
 SOURCES=main_DSA.cpp
 
-#Liste des fichiers objets
+# Liste des fichiers objets
 OBJETS=$(SOURCES:%.cpp=%.o)
 
-#Compilateur et options de compilation
+# Compilateur et options de compilation
 CCPP=g++
 CFLAGS= -W -Wall -Wextra -pedantic -std=c++0x -I /usr/X11R6/include
-LFLAGS= -L . -L /usr/X11R6/lib  -lpthread -lX11 -lXext -Dcimg_use_xshm  -lm -lgmp
+# Ajout de -lssl et -lcrypto dans LFLAGS pour lier OpenSSL
+LFLAGS= -L . -L /usr/X11R6/lib -lpthread -lX11 -lXext -Dcimg_use_xshm -lm -lgmp -lssl -lcrypto
 
-#R�le explicite de construction de l'ex�utable
+# Règle explicite de construction de l'exécutable
 $(EXEC):$(OBJETS) Makefile
 	$(CCPP) -o  $(EXEC) $(OBJETS) $(LFLAGS)
+
 .cpp.o:
 	$(CCPP) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm $(OBJETS)
+
 clear:
 	rm $(EXEC)
+
 depend:
 	sed -e "/^#DEPENDANCIES/,$$ d" Makefile >dependances
 	echo "#DEPENDANCIES" >> dependances
@@ -37,7 +41,3 @@ depend:
 
 #DEPENDANCIES
 main_DSA.o: main_DSA.cpp 
-
-
-
-
