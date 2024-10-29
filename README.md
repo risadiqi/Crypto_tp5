@@ -9,6 +9,6 @@ Ce projet explore les failles de sécurité dans les systèmes de signature num�
     
 ## Structure du Projet
 
-    main.cpp : Ce fichier implémente la signature RSA en utilisant le Théorème des Restes Chinois (CRT) pour optimiser les calculs. Il simule une attaque par injection de                   faute (Bellcore) en introduisant une erreur dans le calcul de la signature, permettant ainsi de récupérer les facteurs premiers de la clé publique. Cette                     technique révèle ainsi la clé privée.
-    main_DSA.cpp : Ce fichier implémente l’algorithme de signature DSA et simule une attaque basée sur la fuite de l’aléa k utilisé pour signer. En exposant cette valeur,                       l’attaque permet de remonter jusqu'à la clé privée, illustrant la vulnérabilité de DSA en cas de fuite de l'aléatoire.
+  main.cpp : Ce fichier implémente la signature RSA en utilisant le Théorème des Restes Chinois (CRT) pour optimiser les calculs. Il simule une attaque par injection de                   faute (Bellcore) en introduisant une erreur dans le calcul de la signature, permettant ainsi de récupérer les facteurs premiers de la clé publique. Cette                     technique révèle ainsi la clé privée.
+  main_DSA.cpp : Ce fichier implémente l’algorithme de signature DSA et simule une attaque basée sur la fuite de l’aléa k utilisé pour signer. En exposant cette valeur,                       l’attaque permet de remonter jusqu'à la clé privée, illustrant la vulnérabilité de DSA en cas de fuite de l'aléatoire.
 
