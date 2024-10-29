@@ -6,6 +6,11 @@ Ce projet explore les failles de sécurité dans les systèmes de signature num�
 
   + Injection de fautes sur la signature RSA pour tester la résistance de l'algorithme face aux erreurs introduites intentionnellement.
   + Fuite d'aléatoire sur DSA pour démontrer comment l'exposition de certaines valeurs aléatoires peut compromettre la clé secrète.
+
+## Membres de l'équipe.
+
+ + Nouhaila Jabbar
+ + Rim Sadiqi
     
 ## Structure du Projet
 
