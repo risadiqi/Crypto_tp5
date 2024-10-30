@@ -143,56 +143,99 @@ void Verify(mpz_t s, mpz_t q, mpz_t r, mpz_t h_m, mpz_t p, mpz_t g, mpz_t y) {
     mpz_clears(s_inv, w, u1, u2, v, temp1, temp2, NULL); // Libère la mémoire
 }
 
-// Fonction d'attaque pour retrouver la clé privée x à partir de la signature et de k
+#include <iostream>
+#include <gmp.h>
+#include <string>
+#include <openssl/sha.h>
+
+// Fonction d'attaque pour retrouver la clé privée x à partir de la signature et de la valeur k
 void Attaque(mpz_t x, mpz_t s, mpz_t k, mpz_t h_m, mpz_t r, mpz_t q) {
     mpz_t temp1, temp2, r_inv;
     mpz_inits(temp1, temp2, r_inv, NULL);
-    mpz_mul(temp1, s, k);
-    mpz_mod(temp1, temp1, q);
-    mpz_sub(temp2, temp1, h_m);
-    mpz_mod(temp2, temp2, q);
+
+    // Calcul de temp1 = (s * k) mod q
+    mpz_mul(temp1, s, k);       // temp1 = s * k
+    mpz_mod(temp1, temp1, q);   // temp1 = temp1 mod q
+
+    // Calcul de temp2 = (temp1 - h_m) mod q, ce qui donne temp2 = (s * k - h(m)) mod q
+    mpz_sub(temp2, temp1, h_m); // temp2 = temp1 - h_m
+    mpz_mod(temp2, temp2, q);   // temp2 = temp2 mod q
+
+    // Inversion de r pour calculer r_inv = r^(-1) mod q
     mpz_invert(r_inv, r, q);
-    mpz_mul(x, temp2, r_inv);
-    mpz_mod(x, x, q);
+
+    // Calcul de x = (temp2 * r_inv) mod q, ce qui correspond à la clé privée
+    mpz_mul(x, temp2, r_inv);   // x = temp2 * r_inv
+    mpz_mod(x, x, q);           // x = x mod q
+
+    // Libération de la mémoire pour les variables temporaires
     mpz_clears(temp1, temp2, r_inv, NULL);
 }
+
+// Fonction principale
 int main() {
+    // Déclaration et initialisation des variables nécessaires pour DSA et l'attaque
     mpz_t p, q, g, y, x, h_m, r, s, h_m_faux, k, x_found;
     mpz_inits(p, q, g, y, x, h_m, r, s, h_m_faux, k, x_found, NULL);
+
+    // Génération des clés publiques et privées pour DSA
     KeyGen(p, q, g, y, x);
+
+    // Affichage des paramètres de DSA et de la clé privée
     afficher("p", p);
     afficher("q", q);
     afficher("g", g);
     afficher("y", y);
     afficher("x", x);
+
+    // Définition du message à signer et calcul de son hachage modulo q
     std::string message = "msg to be signed";
     hachage(message, h_m, q);
+
+    // Signature du message avec DSA : cela génère la signature (r, s) et retourne la valeur aléatoire k
     Sign(p, q, g, x, r, s, h_m, k);
+
+    // Affichage de la signature et de k
     afficher("r", r);
     afficher("s", s);
     afficher("k", k);
-    std::cout << "test valid signature" << std::endl;
+
+    // Vérification de la validité de la signature pour s'assurer que (r, s) est correct
+    std::cout << "Test de signature valide" << std::endl;
     Verify(s, q, r, h_m, p, g, y);
-    /*std::string faux_message = "message modifié.";
+
+    /*
+    // Code pour tester la signature avec un faux message et des modifications de r et s
+    std::string faux_message = "message modifié.";
     hachage(faux_message, h_m_faux, q);
     std::cout << " Test avec message modifié : " << std::endl;
     Verify(s, q, r, h_m_faux, p, g, y);
+
     mpz_add_ui(r, r, 1); 
     std::cout << "r modifié" << std::endl;
     Verify(s, q, r, h_m, p, g, y);
     mpz_sub_ui(r, r, 1); 
+
     mpz_add_ui(s, s, 1);
     std::cout << "s modifié" << std::endl;
     Verify(s, q, r, h_m, p, g, y);
     */
+
+    // Exécution de l'attaque pour retrouver x en utilisant s, k, h_m et r
     Attaque(x_found, s, k, h_m, r, q);
+
+    // Affichage de la clé privée originale et de la clé trouvée pour vérifier l'attaque
     afficher("x privé", x);
     afficher("x retrouvé", x_found);
+
+    // Vérification si la clé trouvée x_found est identique à la clé privée originale x
     if (mpz_cmp(x, x_found) == 0) {
-        std::cout << "x found" << std::endl;
+        std::cout << "x trouvé" << std::endl;
     } else {
-        std::cout << "attack failed" << std::endl;
+        std::cout << "échec de l'attaque" << std::endl;
     }
+
+    // Libération de la mémoire pour toutes les variables GMP
     mpz_clears(p, q, g, y, x, h_m, r, s, k, x_found, NULL);
     return 0;
 }
