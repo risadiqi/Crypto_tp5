@@ -143,11 +143,6 @@ void Verify(mpz_t s, mpz_t q, mpz_t r, mpz_t h_m, mpz_t p, mpz_t g, mpz_t y) {
     mpz_clears(s_inv, w, u1, u2, v, temp1, temp2, NULL); // Libère la mémoire
 }
 
-#include <iostream>
-#include <gmp.h>
-#include <string>
-#include <openssl/sha.h>
-
 // Fonction d'attaque pour retrouver la clé privée x à partir de la signature et de la valeur k
 void Attaque(mpz_t x, mpz_t s, mpz_t k, mpz_t h_m, mpz_t r, mpz_t q) {
     mpz_t temp1, temp2, r_inv;
